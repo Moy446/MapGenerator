@@ -1,26 +1,22 @@
-<script type="module">
-import * as THREE from 'https://cdn.skypack.dev/three';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Procedural</title>
+  <style>
+    body { margin: 0; overflow: hidden; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+async function init() {
+    const response = await fetch('/map/getMap');
+    const data = await response.json();
 
-fetch('http://localhost:8080/map/heightmap')
-  .then(res => res.json())
-  .then(heightmap => {
-    const width = heightmap.length;
-    const height = heightmap[0].length;
-    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
-
-    const vertices = geometry.attributes.position.array;
-    let i = 0;
-    for (let y = 0; y < height; y++) {
-      for (let x = 0; x < width; x++) {
-        vertices[i * 3 + 2] = heightmap[x][y] * 10; // z-value (altura)
-        i++;
-      }
-    }
-
-    geometry.computeVertexNormals();
-
-    const material = new THREE.MeshStandardMaterial({ color: 0x88cc88, wireframe: false });
-    const mesh = new THREE.Mesh(geometry, material);
+    const width = data.length;
+    const height = data[0].length;
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
@@ -28,21 +24,39 @@ fetch('http://localhost:8080/map/heightmap')
     renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(renderer.domElement);
 
-    scene.add(mesh);
-    camera.position.z = 150;
-    camera.position.y = 100;
-    camera.lookAt(mesh.position);
+    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+
+    // Asigna alturas usando los valores de ruido
+    for (let i = 0; i < geometry.attributes.position.count; i++) {
+        const x = i % width;
+        const y = Math.floor(i / width);
+        const z = data[x][y] * 5; // escala de altura
+        geometry.attributes.position.setZ(i, z);
+    }
+
+    geometry.computeVertexNormals();
+
+    const material = new THREE.MeshStandardMaterial({ color: 0x88cc88, wireframe: false, flatShading: true });
+    const plane = new THREE.Mesh(geometry, material);
+    scene.add(plane);
 
     const light = new THREE.DirectionalLight(0xffffff, 1);
     light.position.set(1, 1, 1).normalize();
     scene.add(light);
 
+    camera.position.z = 100;
+    camera.position.y = 50;
+    camera.rotation.x = -0.5;
+
     function animate() {
-      requestAnimationFrame(animate);
-      mesh.rotation.z += 0.001;
-      renderer.render(scene, camera);
+        requestAnimationFrame(animate);
+        renderer.render(scene, camera);
     }
 
     animate();
-  });
+}
+
+init();
 </script>
+</body>
+</html>

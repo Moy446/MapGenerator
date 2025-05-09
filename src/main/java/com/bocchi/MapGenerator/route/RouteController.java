@@ -11,6 +11,12 @@ public class RouteController {
     	return "index";
 	}
 
+	@GetMapping("/map/getMap")
+	public String getMethodName() {
+		return "map";
+	}
+	
+	
 	@GetMapping("/error")
 	public String error(@RequestParam(value="error",defaultValue = "valio verga") String error){
 		return String.format("Hello %s!", error);
