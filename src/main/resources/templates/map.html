@@ -1,0 +1,48 @@
+<script type="module">
+import * as THREE from 'https://cdn.skypack.dev/three';
+
+fetch('http://localhost:8080/map/heightmap')
+  .then(res => res.json())
+  .then(heightmap => {
+    const width = heightmap.length;
+    const height = heightmap[0].length;
+    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+
+    const vertices = geometry.attributes.position.array;
+    let i = 0;
+    for (let y = 0; y < height; y++) {
+      for (let x = 0; x < width; x++) {
+        vertices[i * 3 + 2] = heightmap[x][y] * 10; // z-value (altura)
+        i++;
+      }
+    }
+
+    geometry.computeVertexNormals();
+
+    const material = new THREE.MeshStandardMaterial({ color: 0x88cc88, wireframe: false });
+    const mesh = new THREE.Mesh(geometry, material);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.body.appendChild(renderer.domElement);
+
+    scene.add(mesh);
+    camera.position.z = 150;
+    camera.position.y = 100;
+    camera.lookAt(mesh.position);
+
+    const light = new THREE.DirectionalLight(0xffffff, 1);
+    light.position.set(1, 1, 1).normalize();
+    scene.add(light);
+
+    function animate() {
+      requestAnimationFrame(animate);
+      mesh.rotation.z += 0.001;
+      renderer.render(scene, camera);
+    }
+
+    animate();
+  });
+</script>
