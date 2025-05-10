@@ -9,54 +9,58 @@
   </style>
 </head>
 <body>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
-async function init() {
-    const response = await fetch('/map/getMap');
-    const data = await response.json();
+  <script type="module">
+    import * as THREE from '../js/three.module.min.js';
+    import { OrbitControls } from '../js/OrbitControls.js';
 
-    const width = data.length;
-    const height = data[0].length;
+    async function generarMapa() {
+      const response = await fetch("/map/getMap");
+      const data = await response.json();
+      console.log(data); // Solo para verificar
 
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    document.body.appendChild(renderer.domElement);
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
 
-    const geometry = new THREE.PlaneGeometry(width, height, width - 1, height - 1);
+      const geometry = new THREE.PlaneGeometry(600, 600, data.length - 1, data[0].length - 1);
+      const vertices = geometry.attributes.position.array;
 
-    // Asigna alturas usando los valores de ruido
-    for (let i = 0; i < geometry.attributes.position.count; i++) {
-        const x = i % width;
-        const y = Math.floor(i / width);
-        const z = data[x][y] * 5; // escala de altura
-        geometry.attributes.position.setZ(i, z);
-    }
+      let index = 0;
+      for (let i = 0; i < data.length; i++) {
+        for (let j = 0; j < data[i].length; j++) {
+          vertices[index + 2] = data[i][j] * 180;
+          index += 3;
+        }
+      }
 
-    geometry.computeVertexNormals();
+      geometry.computeVertexNormals();
 
-    const material = new THREE.MeshStandardMaterial({ color: 0x88cc88, wireframe: false, flatShading: true });
-    const plane = new THREE.Mesh(geometry, material);
-    scene.add(plane);
+      const material = new THREE.MeshStandardMaterial({ color: 0x228b22, wireframe: false, flatShading: true });
+      const mesh = new THREE.Mesh(geometry, material);
+      mesh.rotation.x = -Math.PI / 2;
+      scene.add(mesh);
 
-    const light = new THREE.DirectionalLight(0xffffff, 1);
-    light.position.set(1, 1, 1).normalize();
-    scene.add(light);
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(0, 50, 50).normalize();
+      scene.add(light);
 
-    camera.position.z = 100;
-    camera.position.y = 50;
-    camera.rotation.x = -0.5;
+      camera.position.set(0, 60, 60);
+      camera.lookAt(0, 0, 0);
 
-    function animate() {
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      function animate() {
         requestAnimationFrame(animate);
+        controls.update();
         renderer.render(scene, camera);
+      }
+      animate();
     }
 
-    animate();
-}
-
-init();
-</script>
+    generarMapa();
+    </script>
 </body>
 </html>

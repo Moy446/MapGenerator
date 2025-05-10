@@ -3,12 +3,18 @@ package com.bocchi.MapGenerator.controllers;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bocchi.MapGenerator.NoiseGenerator;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
 
 @RestController
+@RequestMapping("/map")
 public class MapController {
 
     private final NoiseGenerator noiseGenerator = new NoiseGenerator();
     
+    @GetMapping("/getMap")
     public double[][] getSeed(){
         int width = 100;
         int height = 100;

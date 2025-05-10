@@ -10,13 +10,10 @@ public class RouteController {
     public String home() {
     	return "index";
 	}
-
-	@GetMapping("/map/getMap")
-	public String getMethodName() {
-		return "map";
+	@GetMapping("/map.html")
+    public String map() {
+    	return "map";
 	}
-	
-	
 	@GetMapping("/error")
 	public String error(@RequestParam(value="error",defaultValue = "valio verga") String error){
 		return String.format("Hello %s!", error);
