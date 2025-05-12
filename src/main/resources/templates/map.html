@@ -10,12 +10,17 @@
 </head>
 <body>
   <script type="module">
+    const urlParams = new URLSearchParams(window.location.search);
+    const seed = urlParams.get("seed") || 187451218;
+
     import * as THREE from '../js/three.module.min.js';
     import { OrbitControls } from '../js/OrbitControls.js';
 
     async function generarMapa() {
-      const response = await fetch("/map/getMap");
+      const response = await fetch(`/getMap?seed=${seed}`);
       const data = await response.json();
+      const width = data.length;
+      const height = data[0].length;
       console.log(data); // Solo para verificar
 
       const scene = new THREE.Scene();
@@ -24,31 +29,61 @@
       renderer.setSize(window.innerWidth, window.innerHeight);
       document.body.appendChild(renderer.domElement);
 
-      const geometry = new THREE.PlaneGeometry(600, 600, data.length - 1, data[0].length - 1);
-      const vertices = geometry.attributes.position.array;
+      const geometry = new THREE.PlaneGeometry(300, 300, width - 1, height - 1);
+      geometry.rotateX(-Math.PI / 2);
 
+      const position = geometry.attributes.position;
+      const colors = [];
+      
       let index = 0;
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < data[i].length; j++) {
-          vertices[index + 2] = data[i][j] * 180;
-          index += 3;
+      for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+          const h = data[i][j]; // entre 0 y 1
+          let y = h * 20; // altura escalada
+          if (h<0.2){
+            y += (h-.5) * 40;
+            colors.push(0.1, 0.3, 0.8); // río (azul)
+          }else if (h<0.4){
+            y += (h-.5) * 20
+            colors.push(0.76, 0.70, 0.50); //arena (baige)
+          }else if (h<0.5){
+            y -= (h-.5) * 20
+            colors.push(0.1, 0.6, 0.1); // pasto (verde)
+          }else{
+            y -= (h-.7) * 40
+            colors.push(0.5, 0.5, 0.5); // montaña (gris)
+            //y += (h-.5) * 40;
+          }
+          position.setY(index, y);
+          index++;
         }
       }
 
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
       geometry.computeVertexNormals();
 
-      const material = new THREE.MeshStandardMaterial({ color: 0x228b22, wireframe: false, flatShading: true });
+      //materiales
+      const material = new THREE.MeshLambertMaterial({
+        vertexColors: true,
+        roughness: 0.8,
+        metalness: 0.1,
+      });
+      //malla
       const mesh = new THREE.Mesh(geometry, material);
-      mesh.rotation.x = -Math.PI / 2;
       scene.add(mesh);
 
+      //luz
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(0, 50, 50).normalize();
       scene.add(light);
+      const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambient);
 
+      //camara
       camera.position.set(0, 60, 60);
       camera.lookAt(0, 0, 0);
 
+      //controles
       const controls = new OrbitControls(camera, renderer.domElement);
       controls.enableDamping = true;
 

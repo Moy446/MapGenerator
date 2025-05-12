@@ -5,13 +5,21 @@
     <title>Map Generator</title>
 </head>
 <body>
-    <textarea size="90%" rows="30"></textarea>
+    <textarea cols="90" rows="10" placeholder="Log u otra información..."></textarea>
     <br>
-    <img src="/images/placeholder.jpg" height="200dp">
+        <img src="/images/placeholder.jpg" height="200dp">
     <br>
-    <a href="map.html">
-        <button>Generar</button>
-    </a>
+    <label for="seedInput">Semilla:</label>
+    <input type="text" id="seedInput" placeholder="Ej: 123456" />
+
+    <button onclick="generarMapa()">Generar</button>
     
+
+    <script>
+        function generarMapa() {
+            const seed = document.getElementById("seedInput").value || 0;
+            window.location.href = `map.html?seed=${encodeURIComponent(seed)}`;
+        }
+    </script>
 </body>
 </html>
