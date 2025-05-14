@@ -3,13 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <title>Mapa Procedural</title>
-  <style>
-    body { margin: 0; overflow: hidden; }
-    canvas { display: block; }
-  </style>
+  <link rel="stylesheet" href="../css/mapStyle.css">
 </head>
 <body>
+  <div class="rigthCorner">
+    <button id="btn-generar" class="btnPrincipal">Generar nuevo mapa</button>
+    <button id="btn-controls" class="btn" > ? </button>
+  </div>
+  
+  <div class="leftPanel">
+    <textarea id="#listComponentes" readonly></textarea>
+    <button class="btnPrincipal">Agregar componente</button>
+  </div>
+
   <script type="module">
+
+    document.getElementById("btn-generar").addEventListener("click", () => {
+      const nuevaSeed = Math.floor(Math.random() * 100000);
+      window.location.href = `/map.html?seed=${nuevaSeed}`;
+    });
+
     const urlParams = new URLSearchParams(window.location.search);
     const seed = urlParams.get("seed") || 187451218;
 

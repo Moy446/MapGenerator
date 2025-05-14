@@ -1,0 +1,45 @@
+*{
+    background-color: rgb(105, 39, 39);
+    align-content: center;
+    justify-content: center;
+    
+    margin-bottom: 30%;
+    
+    font-family: Century Gothic;
+}
+
+#titulo{
+    font-size: 20px;  
+    width: 360px;
+    margin: 0px auto;
+    display: flex;
+}
+
+#container{
+    background-color: rgb(213, 186, 186);
+    font-size: 30px;
+    width: 760px;
+    margin: 0px auto;
+    display: flex;
+    
+}
+
+
+input{
+    caret-color: rgb(255, 0, 0);
+}
+
+.txt{
+    background-color: antiquewhite;
+}
+
+.btn{
+    padding: 10px 15px;
+    background-color: #881f1f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    z-index: 30;
+}
