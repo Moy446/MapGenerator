@@ -1,7 +1,7 @@
 package com.bocchi.MapGenerator.controllers;
 
 import com.bocchi.MapGenerator.parser.MapParseService;
-import com.bocchi.MapGenerator.parser.Parser.ElementoMapa;
+import com.bocchi.MapGenerator.model.ElementoMapa;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
