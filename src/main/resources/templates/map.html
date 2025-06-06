@@ -132,7 +132,25 @@
       if (dialogo.returnValue === 'ok') {
         const newComponent = componente.value.trim();
 
-        textarea.value = textarea.value + "\n" + newComponent;
+        fetch("/component", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ newComponent })
+  })
+  .then(res => res.json())
+  .then(mensajes => {
+    if(mensajes[0] != "404")
+    {
+       textarea.value = textarea.value + "\n" + newComponent;
+       //Aqui pintaria lo demas
+    }
+    else
+    {
+      alert("Componente no reconocido");
+    }
+  });
+
+
       }
     });
   </script>
