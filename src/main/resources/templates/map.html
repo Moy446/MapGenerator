@@ -13,11 +13,22 @@
   
   <div class="leftPanel">
     <textarea id="#listComponentes" readonly></textarea>
-    <button class="btnPrincipal">Agregar componente</button>
+    <button onclick="document.getElementById('newComponent').showModal()" class="btnPrincipal">Agregar componente</button>
   </div>
 
-  <script type="module">
+  <dialog id="newComponent">
+    <form method="dialog">
+      <label>Componente:
+        <input type="text" id="info">
+      </label>
+      <menu>
+        <button id="cancelar" value="cancelar">Cancelar</button>
+        <button id="enviar" value="ok">Aceptar</button>
+      </menu>
+    </form>
+  </dialog>
 
+  <script type="module">
     document.getElementById("btn-generar").addEventListener("click", () => {
       const nuevaSeed = Math.floor(Math.random() * 100000);
       window.location.href = `/map.html?seed=${nuevaSeed}`;
@@ -110,5 +121,20 @@
 
     generarMapa();
     </script>
+
+  <!-- Botón para agregar componentes -->
+  <script>
+    const dialogo = document.getElementById('newComponent');
+    const textarea = document.getElementById('#listComponentes');
+    const componente = document.getElementById('info');
+
+    dialogo.addEventListener('close', () => {
+      if (dialogo.returnValue === 'ok') {
+        const newComponent = componente.value.trim();
+
+        textarea.value = textarea.value + "\n" + newComponent;
+      }
+    });
+  </script>
 </body>
 </html>
