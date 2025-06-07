@@ -39,6 +39,7 @@
 
     import * as THREE from '../js/three.module.min.js';
     import { OrbitControls } from '../js/OrbitControls.js';
+    import { FBXLoader } from '../js/FBXLoader.js';
 
     let scene, camera, renderer;
 
@@ -125,6 +126,9 @@
 
     // ------------------------- Agregar componentes -------------------------------
 
+    //const { FBXLoader } = await import('/js/FBXLoader.js');
+
+
     const dialogo = document.getElementById('newComponent');
     const textarea = document.getElementById('#listComponentes');
     const componente = document.getElementById('info');
@@ -144,14 +148,29 @@
     {
        textarea.value = textarea.value + "\n" + newComponent;
 
-       const geometry = new THREE.BoxGeometry(10, 10, 10);
-       const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-       const caja = new THREE.Mesh(geometry, material);
+       //const geometry = new THREE.BoxGeometry(10, 10, 10);
+       //const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+       //const caja = new THREE.Mesh(geometry, material);
 
-       caja.position.set(parseInt(mensajes[1]), parseInt(mensajes[2]), parseInt(mensajes[3]));
+       if (THREE.ColorManagement) {
+          THREE.ColorManagement.enabled = false;
+       }
+
+
+       const loader = new FBXLoader();
+        loader.load('../modelos/pino.fbx', (fbx) => {
+        fbx.scale.set(0.1, 0.1, 0.1);
+        fbx.position.set(parseInt(mensajes[1]), parseInt(mensajes[2]), parseInt(mensajes[3]));
+        scene.add(fbx);
+        }, undefined, (error) => {
+          console.error('Error al cargar FBX:', error);
+       });
+
+
+       //caja.position.set(parseInt(mensajes[1]), parseInt(mensajes[2]), parseInt(mensajes[3]));
 
        // Agregar a la escena
-       scene.add(caja);
+       //scene.add(caja);
     }
     else
     {

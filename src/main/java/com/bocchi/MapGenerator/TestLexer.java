@@ -12,7 +12,7 @@ public class TestLexer {
         try {
             // Texto de prueba
             String input = """
-                pino(10, 20, 30);
+                pino(-10, -20, -30);
                 cueva(5, 15, 25);
                 dragon(100, 200, 300);
                 """;
