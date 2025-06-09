@@ -148,17 +148,60 @@
     {
        textarea.value = textarea.value + "\n" + newComponent;
 
-       //const geometry = new THREE.BoxGeometry(10, 10, 10);
-       //const material = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-       //const caja = new THREE.Mesh(geometry, material);
-
-       if (THREE.ColorManagement) {
-          THREE.ColorManagement.enabled = false;
+       var item = '';
+       switch (mensajes[0]) {
+          case "2":
+            item = "pino";
+            break;
+          case "3":
+            item = "arbol"; //falta modelo
+            break;
+          case "4":
+            item = "cueva";
+            break;
+          case "5":
+            item = "animal"; //falta modelo
+            break;
+          case "6":
+            item = "dragon"; //falta modelo
+            break;
+          case "7":
+            item = "piedra1"; //Sale una piedra enorme
+            break;
+          case "8":
+            item = "persona";
+            break;
+          case "9":
+            item = "castillo";
+            break;
+          case "10":
+            item = "mounstro"; //falta modelo
+            break;
+          case "11":
+            item = "casa1"; //falla porque busca 2 archivos png que no existen
+            break;
+          case "12":
+            item = "casa2";
+            break;
+          case "13":
+            item = "piedra2"; //sale una piedra enorme
+            break;
+          case "14":
+            item = "piedra3"; //sale una piedra enorme
+            break;
+          case "15":
+            item = "piedra6"; //sale una piedra enorme, la piedra5 también sale enorme, igual con la piedra6
+            break;
+          case "16":
+            item = "torre"; //falta modelo
+            break;
+          default:
+            item = "nada";
+            break;
        }
 
-
        const loader = new FBXLoader();
-        loader.load('../modelos/pino.fbx', (fbx) => {
+        loader.load('../modelos/' + item + '.fbx', (fbx) => {
         fbx.scale.set(0.1, 0.1, 0.1);
         fbx.position.set(parseInt(mensajes[1]), parseInt(mensajes[2]), parseInt(mensajes[3]));
         scene.add(fbx);
@@ -166,11 +209,6 @@
           console.error('Error al cargar FBX:', error);
        });
 
-
-       //caja.position.set(parseInt(mensajes[1]), parseInt(mensajes[2]), parseInt(mensajes[3]));
-
-       // Agregar a la escena
-       //scene.add(caja);
     }
     else
     {
