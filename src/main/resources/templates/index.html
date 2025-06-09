@@ -1,14 +1,29 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+
     <meta charset="UTF-8">
     <title>Map Generator</title>
+    <link rel="stylesheet" href="../css/estilo.css"/>
+
 </head>
 <body>
-    <textarea size="90%" rows="30"></textarea>
-    <br>
-    <img src="/images/placeholder.jpg" height="200dp">
-    <br>
-    <button>Generar</button>
+    <div id="titulo">
+    <h1>Map Generator</h1>
+    </div>
+    <div id="container">
+        <input type="number" id="seedInput" placeholder="Semilla" class="txt"/>
+        <br>   
+        <button onclick="generarMapa()"  class="btn">Generar</button> 
+    </div>
+    
+
+
+    <script>
+        function generarMapa() {
+            const seed = document.getElementById("seedInput").value || 0;
+            window.location.href = `map.html?seed=${encodeURIComponent(seed)}`;
+        }
+    </script>
 </body>
 </html>

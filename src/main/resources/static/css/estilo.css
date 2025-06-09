@@ -1,0 +1,55 @@
+body {
+    background-color: rgb(105, 39, 39);
+    font-family: "Century Gothic", sans-serif;
+    margin: 0;
+    padding: 0;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+#titulo {
+    font-size: 20px;
+    width: 360px;
+    margin: 20px auto;
+    text-align: center;
+    color: white;
+}
+
+#container {
+    background-color: rgb(213, 186, 186);
+    font-size: 30px;
+    width: 800px;
+    margin: 0 auto; /* Centrado horizontal */
+    padding: 20px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centra los hijos horizontalmente */
+}
+
+input{
+    caret-color: rgb(255, 0, 0);
+}
+
+.txt {
+    padding: 10px;
+    background-color: antiquewhite;
+    border: none;
+    border-radius: 10px;
+    width: 80%;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.btn {
+    padding: 10px 15px;
+    background-color: #881f1f;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 18px;
+}

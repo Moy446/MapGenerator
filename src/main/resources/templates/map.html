@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mapa Procedural</title>
+  <link rel="stylesheet" href="../css/mapStyle.css">
+</head>
+<body>
+  <div class="rigthCorner">
+    <button id="btn-generar" class="btnPrincipal">Generar nuevo mapa</button>
+    <button id="btn-controls" class="btn" > ? </button>
+  </div>
+  
+  <div class="leftPanel">
+    <textarea id="#listComponentes" readonly></textarea>
+    <button onclick="document.getElementById('newComponent').showModal()" class="btnPrincipal">Agregar componente</button>
+  </div>
+
+  <dialog id="newComponent">
+    <form method="dialog">
+      <label>Componente:
+        <input type="text" id="info">
+      </label>
+      <menu>
+        <button id="cancelar" value="cancelar">Cancelar</button>
+        <button id="enviar" value="ok">Aceptar</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script type="module">
+    document.getElementById("btn-generar").addEventListener("click", () => {
+      const nuevaSeed = Math.floor(Math.random() * 100000);
+      window.location.href = `/map.html?seed=${nuevaSeed}`;
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const seed = urlParams.get("seed") || 187451218;
+
+    import * as THREE from '../js/three.module.min.js';
+    import { OrbitControls } from '../js/OrbitControls.js';
+    import { FBXLoader } from '../js/FBXLoader.js';
+
+    let scene, camera, renderer;
+
+    async function generarMapa() {
+      const response = await fetch(`/getMap?seed=${seed}`);
+      const data = await response.json();
+      const width = data.length;
+      const height = data[0].length;
+      console.log(data); // Solo para verificar
+
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      document.body.appendChild(renderer.domElement);
+
+      const geometry = new THREE.PlaneGeometry(300, 300, width - 1, height - 1);
+      geometry.rotateX(-Math.PI / 2);
+
+      const position = geometry.attributes.position;
+      const colors = [];
+      
+      let index = 0;
+      for (let i = 0; i < width; i++) {
+        for (let j = 0; j < height; j++) {
+          const h = data[i][j]; // entre 0 y 1
+          let y = h * 20; // altura escalada
+          if (h<0.2){
+            y += (h-.5) * 40;
+            colors.push(0.1, 0.3, 0.8); // río (azul)
+          }else if (h<0.4){
+            y += (h-.5) * 20
+            colors.push(0.76, 0.70, 0.50); //arena (baige)
+          }else if (h<0.5){
+            y -= (h-.5) * 20
+            colors.push(0.1, 0.6, 0.1); // pasto (verde)
+          }else{
+            y -= (h-.7) * 40
+            colors.push(0.5, 0.5, 0.5); // montaña (gris)
+            //y += (h-.5) * 40;
+          }
+          position.setY(index, y);
+          index++;
+        }
+      }
+
+      geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+      geometry.computeVertexNormals();
+
+      //materiales
+      const material = new THREE.MeshLambertMaterial({
+        vertexColors: true,
+        roughness: 0.8,
+        metalness: 0.1,
+      });
+      //malla
+      const mesh = new THREE.Mesh(geometry, material);
+      scene.add(mesh);
+
+      //luz
+      const light = new THREE.DirectionalLight(0xffffff, 1);
+      light.position.set(0, 50, 50).normalize();
+      scene.add(light);
+      const ambient = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambient);
+
+      //camara
+      camera.position.set(0, 60, 60);
+      camera.lookAt(0, 0, 0);
+
+      //controles
+      const controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+
+      function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+      }
+      animate();
+    }
+
+    generarMapa();
+
+    // ------------------------- Agregar componentes -------------------------------
+
+
+    const dialogo = document.getElementById('newComponent');
+    const textarea = document.getElementById('#listComponentes');
+    const componente = document.getElementById('info');
+
+    function randomNumber(max, min) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    dialogo.addEventListener('close', () => {
+      if (dialogo.returnValue === 'ok') {
+        const newComponent = componente.value.trim();
+
+        fetch("/component", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ newComponent })
+  })
+  .then(res => res.json())
+  .then(mensajes => {
+    if(mensajes[0] != "404")
+    {
+       textarea.value = textarea.value + "\n" + newComponent;
+       let number = 0;
+
+       var item = '';
+       switch (mensajes[0]) {
+          case "2":
+            item = "pino2";
+            break;
+          case "3":
+            //arbol1 bonzai
+            //arbol2 seco
+
+            item = "arbol" + randomNumber(2, 1);
+            break;
+          case "4":
+            item = "cueva";
+            break;
+          case "5":
+            //animal1 caballo
+            //animal2 oveja
+            //animal3 shiba dog
+            //animal4 vaca
+            //animal5 Gallina
+            //animal6 Gallina enorme
+            //animal7 castor
+
+            item = "animal" + randomNumber(7, 1);
+            break;
+          case "6":
+            item = "dragon" + randomNumber(2, 1);
+            break;
+          case "7":
+            item = "piedra1";
+            break;
+          case "8":
+            item = "persona";
+            break;
+          case "9":
+            item = "castillo";
+            break;
+          case "10":
+            //mounstro1 goblin
+            //mounstro2 golem
+            //mounstro3 spider
+
+            item = "mounstro" + randomNumber(3, 1);
+            break;
+          case "11":
+            item = "casa1"; //falla porque busca 2 archivos png que no existen
+            break;
+          case "12":
+            item = "casa2";
+            break;
+          case "13":
+            item = "piedra2";
+            break;
+          case "14":
+            item = "piedra3";
+            break;
+          case "15":
+            item = "piedra4";
+            break;
+          case "16":
+            item = "torre"; //falta modelo
+            break;
+          default:
+            item = "nada";
+            break;
+       }
+
+       const loader = new FBXLoader();
+        loader.load('../modelos/' + item + '.fbx', (fbx) => {
+        fbx.scale.set(0.1, 0.1, 0.1);
+        fbx.position.set(parseInt(mensajes[1]), parseInt(mensajes[2]), parseInt(mensajes[3]));
+        scene.add(fbx);
+        }, undefined, (error) => {
+          console.error('Error al cargar FBX:', error);
+       });
+
+    }
+    else
+    {
+      alert("Componente no reconocido");
+    }
+  });
+      }
+    });
+    </script>
+
+</body>
+</html>
