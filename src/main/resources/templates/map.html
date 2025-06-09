@@ -126,12 +126,16 @@
 
     // ------------------------- Agregar componentes -------------------------------
 
-    //const { FBXLoader } = await import('/js/FBXLoader.js');
-
 
     const dialogo = document.getElementById('newComponent');
     const textarea = document.getElementById('#listComponentes');
     const componente = document.getElementById('info');
+
+    function randomNumber(max, min) {
+      min = Math.ceil(min);
+      max = Math.floor(max);
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
 
     dialogo.addEventListener('close', () => {
       if (dialogo.returnValue === 'ok') {
@@ -147,26 +151,38 @@
     if(mensajes[0] != "404")
     {
        textarea.value = textarea.value + "\n" + newComponent;
+       let number = 0;
 
        var item = '';
        switch (mensajes[0]) {
           case "2":
-            item = "pino";
+            item = "pino2";
             break;
           case "3":
-            item = "arbol"; //falta modelo
+            //arbol1 bonzai
+            //arbol2 seco
+
+            item = "arbol" + randomNumber(2, 1);
             break;
           case "4":
             item = "cueva";
             break;
           case "5":
-            item = "animal"; //falta modelo
+            //animal1 caballo
+            //animal2 oveja
+            //animal3 shiba dog
+            //animal4 vaca
+            //animal5 Gallina
+            //animal6 Gallina enorme
+            //animal7 castor
+
+            item = "animal" + randomNumber(7, 1);
             break;
           case "6":
-            item = "dragon"; //falta modelo
+            item = "dragon" + randomNumber(2, 1);
             break;
           case "7":
-            item = "piedra1"; //Sale una piedra enorme
+            item = "piedra1";
             break;
           case "8":
             item = "persona";
@@ -175,7 +191,11 @@
             item = "castillo";
             break;
           case "10":
-            item = "mounstro"; //falta modelo
+            //mounstro1 goblin
+            //mounstro2 golem
+            //mounstro3 spider
+
+            item = "mounstro" + randomNumber(3, 1);
             break;
           case "11":
             item = "casa1"; //falla porque busca 2 archivos png que no existen
@@ -184,13 +204,13 @@
             item = "casa2";
             break;
           case "13":
-            item = "piedra2"; //sale una piedra enorme
+            item = "piedra2";
             break;
           case "14":
-            item = "piedra3"; //sale una piedra enorme
+            item = "piedra3";
             break;
           case "15":
-            item = "piedra6"; //sale una piedra enorme, la piedra5 también sale enorme, igual con la piedra6
+            item = "piedra4";
             break;
           case "16":
             item = "torre"; //falta modelo
