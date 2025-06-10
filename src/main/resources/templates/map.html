@@ -8,13 +8,37 @@
 <body>
   <div class="rigthCorner">
     <button id="btn-generar" class="btnPrincipal">Generar nuevo mapa</button>
-    <button id="btn-controls" class="btn" > ? </button>
+    <button id="btn-controls" class="btn" onclick="document.getElementById('ayuda').showModal()"> ? </button>
   </div>
   
   <div class="leftPanel">
     <textarea id="#listComponentes" readonly></textarea>
     <button onclick="document.getElementById('newComponent').showModal()" class="btnPrincipal">Agregar componente</button>
   </div>
+
+  <dialog id="ayuda">
+    <form method="dialog">
+        <label>Lista de comandos:</label><br>
+        <label>Cueva(posicion x,posicion y,posicion z)</label><br>
+        <label>Piedra_marmol(posicion x,posicion y,posicion z)</label><br>
+        <label>Arbol(posicion x,posicion y,posicion z)</label><br>
+        <label>Piedra(posicion x,posicion y,posicion z)</label><br>
+        <label>Pino(posicion x,posicion y,posicion z)</label><br>
+        <label>Castillo(posicion x,posicion y,posicion z)</label><br>
+        <label>Animal(posicion x,posicion y,posicion z)</label><br>
+        <label>Persona(posicion x,posicion y,posicion z)</label><br>
+        <label>Dragon(posicion x,posicion y,posicion z)</label><br>
+        <label>Piedra_caliza(posicion x,posicion y,posicion z)</label><br>
+        <label>Piedra_granito(posicion x,posicion y,posicion z)</label><br>
+        <label>Casa_piedra(posicion x,posicion y,posicion z)</label><br>
+        <label>Casa_madera(posicion x,posicion y,posicion z)</label><br>
+        <label>Mounstro(posicion x,posicion y,posicion z)</label><br>
+        
+        <menu>
+          <button id="cerrar" value="cerrar">Cerrar</button>
+        </menu>
+      </form>
+  </dialog>
 
   <dialog id="newComponent">
     <form method="dialog">
